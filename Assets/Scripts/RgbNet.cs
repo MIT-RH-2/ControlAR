@@ -39,7 +39,7 @@ public class RgbNet : MonoBehaviour
 
         if (this.TargetObject.GetComponent<Rigidbody>() == null) {
             Debug.LogError("Target object does not have a Rigidbody attached. " +
-                "Please attach the Rigidbody component in the Inspector GUI.")
+                "Please attach the Rigidbody component in the Inspector GUI.");
         }
 
         // Start networking
@@ -50,7 +50,7 @@ public class RgbNet : MonoBehaviour
         StartCoroutine(this.testWsUdp());
 
         // Start object motion
-        this.ApplyContinuousForce();
+        // this.ApplyContinuousForce();
         StartCoroutine(this.SmoothTransform());
     }
 
@@ -61,7 +61,7 @@ public class RgbNet : MonoBehaviour
         while (true) {
             this.sendUdp("test");
             Debug.Log("UDP sent");
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(this.SmoothingTime);
         }
     }
 
@@ -77,6 +77,7 @@ public class RgbNet : MonoBehaviour
             string msg = this.ws.RecvString();
             if (msg != null) {
                 Debug.Log("WS recv: " + msg);
+                this.TransformObject(msg);
             }
 
             yield return new WaitForSeconds(0.01f);
@@ -139,13 +140,18 @@ public class RgbNet : MonoBehaviour
     private IEnumerator SmoothTransform() {
         while (this.TargetObject != null) {
 
-            this.TargetObject.transform.eulerAngles = Vector3.Slerp(
-                this.TargetObject.transform.eulerAngles,
-                this.TargetAngles,
-                this.SmoothingTime
-            );
-            
-            yield return new WaitForSeconds(this.SmoothingTime);
+            float t = 0f;
+            while (t < this.SmoothingTime) {
+                this.TargetObject.transform.eulerAngles = Vector3.Slerp(
+                    this.TargetObject.transform.eulerAngles,
+                    this.TargetAngles,
+                    t / this.SmoothingTime
+                );
+                Debug.Log(t);
+                Debug.Log(this.TargetObject.transform.eulerAngles);
+                t += Time.deltaTime;
+                yield return new WaitForSeconds(Time.deltaTime);
+            }
 
         }
     }
