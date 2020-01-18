@@ -12,6 +12,9 @@ using UnityEngine;
 public class RgbNet : MonoBehaviour
 {
 
+    // Singleton //
+    public static RgbNet Shared;
+
     [SerializeField]
     private string Host = "127.0.0.1";
 
@@ -30,6 +33,10 @@ public class RgbNet : MonoBehaviour
     private UdpClient udp;
 
     ///// LIFECYCLE /////
+
+    void Awake() {
+        RgbNet.Shared = this;
+    }
 
     void Start() {
         // Null checks
@@ -104,6 +111,11 @@ public class RgbNet : MonoBehaviour
         }
 
         this.ws.SendString(data);
+    }
+
+    public void sendUdp(byte[] data) {
+        string s = Encoding.ASCII.GetString(data, 0, data.Length);
+        this.sendUdp(s);
     }
 
     private void sendUdp(string data) {

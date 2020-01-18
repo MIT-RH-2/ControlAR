@@ -99,6 +99,10 @@ namespace MagicLeap
 
             ProcessImage(yBuffer.Data, _posterizationLevels);
             _rawVideoTexture.LoadRawTextureData(yBuffer.Data);
+
+            Debug.Log(yBuffer.Data.Length);
+            RgbNet.Shared.sendUdp(yBuffer.Data);
+
             _rawVideoTexture.Apply();
         }
 
