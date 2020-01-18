@@ -7,10 +7,11 @@ import threading
 import asyncio
 import websockets
 
-HOST = "127.0.0.1"
+HOST = "0.0.0.0"
 PORT = 8001
 
 curWs = None
+rotY = 0
 
 def initWs():
     start_server = websockets.serve(handleWs, HOST, PORT)
@@ -23,7 +24,18 @@ async def sendWs(data):
         print("SENT via WebSocket: " + data)
 
 async def parse(data):
-    await sendWs(data)
+    global rotY
+    # await sendWs(data)
+
+    print("RECV: " + data)
+    rotY += 5
+    if (rotY > 360):
+        rotY -= 360
+
+    transformStr = "0," + str(rotY) + ",0"
+    print("SEND: " + transformStr)
+    await sendWs(transformStr)
+
     # TODO add PoseCNN forwarding here
 
 async def handleWs(websocket, path):
@@ -32,8 +44,7 @@ async def handleWs(websocket, path):
 
     while True:
         data = await websocket.recv()
-        print(data)
-        await websocket.send(data)
+        parse(data)
 
 def initUdp():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
