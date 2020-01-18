@@ -1,5 +1,6 @@
 # Mac
 .DS_Store
+.out
 
 # Get latest Unity Gitignore from https://github.com/github/gitignore/blob/master/Unity.gitignore
 #
