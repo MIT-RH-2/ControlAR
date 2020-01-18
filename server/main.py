@@ -1,5 +1,6 @@
-# MIT Reality Hack 2020 project
-# Weston Bell-Geddes, Jay Hesslink, Thomas Suarez
+# MIT Reality Hack 2020 project #
+# Weston Bell-Geddes, Jay Hesslink, Thomas Suarez #
+# Jan 17-19, 2020 #
 
 import socket
 import threading
@@ -7,7 +8,7 @@ import asyncio
 import websockets
 
 HOST = "127.0.0.1"
-PORT = 8000
+PORT = 8001
 
 curWs = None
 
@@ -17,9 +18,9 @@ def initWs():
     asyncio.get_event_loop().run_forever()
 
 async def sendWs(data):
-    print(curWs)
     if curWs != None:
         await curWs.send(data)
+        print("SENT via WebSocket: " + data)
 
 async def parse(data):
     await sendWs(data)
