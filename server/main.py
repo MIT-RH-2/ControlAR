@@ -6,6 +6,7 @@ import socket
 import threading
 import asyncio
 import websockets
+import numpy
 
 HOST = "0.0.0.0"
 PORT = 8001
@@ -27,7 +28,7 @@ async def parse(data):
     global rotY
     # await sendWs(data)
 
-    print("RECV: " + data)
+    print("RECV: " + str(data))
     rotY += 5
     if (rotY > 360):
         rotY -= 360
@@ -51,9 +52,7 @@ def initUdp():
     sock.bind((HOST, PORT))
 
     while True:
-        data, addr = sock.recvfrom(1024)
-        data = str(data) # convert bin -> str
-        print(data)
+        data, addr = sock.recvfrom(65535)
         asyncio.run(parse(data))
 
 threadUdp = threading.Thread(target=initUdp)
