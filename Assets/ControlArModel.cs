@@ -52,9 +52,11 @@ public class ControlArModel : MonoBehaviour
             this.StartCoroutine(this.SendAccelRepeated(this.RotationSendInterval));
         }
         
-        // Login automatically (Magic Leap / desktop only)
+        // Login automatically (Magic Leap only)
         else {
-            this.StartCoroutine(this.AutoLogin());
+            #if PLATFORM_LUMIN
+                this.StartCoroutine(this.AutoLogin());
+            #endif
         }
 
         // Start object motion
