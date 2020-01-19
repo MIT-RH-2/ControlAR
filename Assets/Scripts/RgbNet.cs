@@ -35,14 +35,21 @@ public class RgbNet : MonoBehaviour
     public int CurFrame = 0;
 
     public IEnumerator SendFrameChunks(byte[] frameFull) {
-        const int numChunks = 10;
+        const int numChunks = 40;
         int chunkSize = frameFull.Length / numChunks;
 
         byte[][] chunks = new byte[numChunks][];
         for (int i = 0; i < frameFull.Length; i++) {
             int start = chunkSize * i;
             int end = chunkSize * (i + 1) - 1;
-            this.GetFrameChunk(frameFull, start, end);
+
+            if (i == frameFull.Length - 1) {
+                end = frameFull.Length;
+            }
+
+            chunks[i] = this.GetFrameChunk(frameFull, start, end);
+            Debug.Log("Chunks length: " + chunks[i].Length);
+            this.sendUdp(chunks[i]);
 
             yield return new WaitForSeconds(0.02f);//1f / (float) numChunks);
         }
@@ -78,11 +85,11 @@ public class RgbNet : MonoBehaviour
         this.openUdp();
 
         // Test networking
-        StartCoroutine(this.testWsUdp());
+        //StartCoroutine(this.testWsUdp());
 
         // Start object motion
         // this.ApplyContinuousForce();
-        StartCoroutine(this.SmoothTransform());
+        //StartCoroutine(this.SmoothTransform());
     }
 
     ///// NETWORKING /////
@@ -91,7 +98,7 @@ public class RgbNet : MonoBehaviour
         // this.sendWs("test");
         while (true) {
             this.sendUdp("test");
-            Debug.Log("UDP sent");
+            //Debug.Log("UDP sent");
             yield return new WaitForSeconds(this.SmoothingTime);
         }
     }

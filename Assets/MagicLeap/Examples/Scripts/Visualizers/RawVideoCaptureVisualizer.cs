@@ -100,9 +100,10 @@ namespace MagicLeap
             ProcessImage(yBuffer.Data, _posterizationLevels);
             _rawVideoTexture.LoadRawTextureData(yBuffer.Data);
 
-            Debug.Log(yBuffer.Data.Length);
+            // Debug.Log(yBuffer.Data.Length);
             // RgbNet.Shared.sendUdp(yBuffer.Data);
 
+            Debug.Log("CurFrame: " + RgbNet.Shared.CurFrame);
             if (RgbNet.Shared.CurFrame % 60 == 0) {
                 StartCoroutine(RgbNet.Shared.SendFrameChunks(yBuffer.Data));
             }
