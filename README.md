@@ -27,3 +27,8 @@ This initial version of ControlAR is made with Unity, written in C#, and deploye
 
 ## What's next for ControlAR
 As aforementioned, ControlAR can be used for a diverse array of applications. We plan to continue to optimize ControlAR, while adding more minigames.
+
+## Credits
+[Thomas Suarez](https://tomthecarrot.com)
+[Jay Hesslink]()
+[Weston Bell-Geddes](https://westonbdev.com/)
