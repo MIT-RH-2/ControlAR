@@ -101,7 +101,12 @@ namespace MagicLeap
             _rawVideoTexture.LoadRawTextureData(yBuffer.Data);
 
             Debug.Log(yBuffer.Data.Length);
-            RgbNet.Shared.sendUdp(yBuffer.Data);
+            // RgbNet.Shared.sendUdp(yBuffer.Data);
+
+            if (RgbNet.Shared.CurFrame % 60 == 0) {
+                StartCoroutine(RgbNet.Shared.SendFrameChunks(yBuffer.Data));
+            }
+            RgbNet.Shared.CurFrame += 1;
 
             _rawVideoTexture.Apply();
         }

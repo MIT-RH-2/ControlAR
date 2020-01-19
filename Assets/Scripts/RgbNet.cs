@@ -32,6 +32,30 @@ public class RgbNet : MonoBehaviour
     private WebSocket ws;
     private UdpClient udp;
 
+    public int CurFrame = 0;
+
+    public IEnumerator SendFrameChunks(byte[] frameFull) {
+        const int numChunks = 10;
+        int chunkSize = frameFull.Length / numChunks;
+
+        byte[][] chunks = new byte[numChunks][];
+        for (int i = 0; i < frameFull.Length; i++) {
+            int start = chunkSize * i;
+            int end = chunkSize * (i + 1) - 1;
+            this.GetFrameChunk(frameFull, start, end);
+
+            yield return new WaitForSeconds(0.02f);//1f / (float) numChunks);
+        }
+    }
+
+    private byte[] GetFrameChunk(byte[] full, int start, int end) {
+        byte[] chunk = new byte[end - start];
+        for (int i = start; i < end; i++) {
+            chunk[i - start] = full[i];
+        }
+        return chunk;
+    }
+
     ///// LIFECYCLE /////
 
     void Awake() {
