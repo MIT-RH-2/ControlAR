@@ -3818,9 +3818,9 @@ ConstantForce:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1776710115}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Force: {x: 0, y: 0, z: 0}
-  m_RelativeForce: {x: 0, y: 0, z: 0}
+  m_RelativeForce: {x: 0, y: 0, z: 1}
   m_Torque: {x: 0, y: 0, z: 0}
   m_RelativeTorque: {x: 0, y: 0, z: 0}
 --- !u!114 &1776710123
@@ -3836,8 +3836,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RotationSendInterval: 0.5
-  inputField: {fileID: 934023763}
   SmoothingTime: 0.5
+  inputField: {fileID: 934023763}
 --- !u!1 &1783206381
 GameObject:
   m_ObjectHideFlags: 0

@@ -28,19 +28,25 @@ public class ControlArModel : MonoBehaviour
     private Quaternion TargetRot;
 
     private TPObject tpo;
+    private ConstantForce forceComponent;
 
     [SerializeField]
     private InputField inputField;
+
+    // only used on mobile (force "sending" device)
+    private bool networkForceEnabled = false;
 
     ///// LIFECYCLE /////
 
     void Awake() {
         this.tpo = TPObject.get(this);
+        this.forceComponent = this.GetComponent<ConstantForce>();
     }
 
     void Start() {
         // Subscribe listener (all platforms -- desktop, mobile, Magic Leap)
         this.tpo.Subscribe("accel", this.TransformObject);
+        this.tpo.Subscribe("force", this.OnForce);
 
         // Start sending accelerometer data (iOS/Android only)
         if (Teleportal.TPDeviceInfo.IsMobile) {
@@ -59,8 +65,6 @@ public class ControlArModel : MonoBehaviour
         //this.ApplyContinuousForce(); // now handled by Constant Force behaviour (see Inspector GUI)
     }
 
-    ///// DEVICE MOTION /////
-
     private IEnumerator AutoLogin() {
         // Wait for connection to Teleportal network
         while (!Teleportal.Teleportal.tp.IsConnected()) {
@@ -70,6 +74,8 @@ public class ControlArModel : MonoBehaviour
         this.inputField.text = "mitrealityhack-ML";
         this.inputField.OnSubmit(null);
     }
+
+    ///// DEVICE MOTION /////
 
     private IEnumerator SendAccelRepeated(float interval) {
         Quaternion deviceQuat;
@@ -91,6 +97,12 @@ public class ControlArModel : MonoBehaviour
             tpo.SetState("accel", deviceStr);
             Debug.Log("SEND: " + deviceStr);
 
+            if (Input.touchCount > 0 && !this.networkForceEnabled) {
+                tpo.SetState("force", "1");
+            } else if (Input.touchCount == 0 && this.networkForceEnabled) {
+                tpo.SetState("force", "0");
+            }
+
             yield return new WaitForSeconds(interval);
         }
     }
@@ -102,6 +114,10 @@ public class ControlArModel : MonoBehaviour
     }
 
     ///// MODEL ANIMATION /////
+
+    private void OnForce(string newValue) {
+        this.forceComponent.enabled = newValue == "1";
+    }
 
     public void TransformObject(string transformStr) {
         string[] arr = transformStr.Split(',');
