@@ -30,9 +30,6 @@ public class ControlArModel : MonoBehaviour
     private TPObject tpo;
     private ConstantForce forceComponent;
 
-    [SerializeField]
-    private InputField inputField;
-
     // only used on mobile (force "sending" device)
     private bool networkForceEnabled = false;
 
@@ -71,8 +68,9 @@ public class ControlArModel : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
 
-        this.inputField.text = "mitrealityhack-ML";
-        this.inputField.OnSubmit(null);
+        Teleportal.Teleportal.tp.SetUsername("mitrealityhack-ml");
+        Teleportal.AuthModule.Shared.AuthGUI.SetActive(false);
+        Teleportal.AuthModule.Shared.Authenticate();
     }
 
     ///// DEVICE MOTION /////
@@ -99,8 +97,10 @@ public class ControlArModel : MonoBehaviour
 
             if (Input.touchCount > 0 && !this.networkForceEnabled) {
                 tpo.SetState("force", "1");
+                this.networkForceEnabled = true;
             } else if (Input.touchCount == 0 && this.networkForceEnabled) {
                 tpo.SetState("force", "0");
+                this.networkForceEnabled = false;
             }
 
             yield return new WaitForSeconds(interval);
